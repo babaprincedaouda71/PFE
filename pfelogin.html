@@ -13,6 +13,106 @@
             <input type="submit" name="" value="login">
           </form>
 
+    
+      <h1>welcome to the signup section</h1>
+        <form class="site-form" action="/fcim_blog/signup/" method="post">
+           {% csrf_token %}
+            {{ form }}
+            <input type="submit" name="" value="signup">
+          </form>
+
+          <form class="logout-link" action="{% url 'fcim_blog:logout' %}" method="post">
+             {% csrf_token %}
+             <button type="submit" >logout</button>
+          </form>
+
+
+    
+    <h1> forms section</h1>
+    
+class diplome(models.Model):
+code_dip = models.CharField(max_length=100)
+type_dip = models.CharField(max_length=100)
+date_dip = models.DateTimeField()
+libelle_dip = models.CharField(max_length=100)
+
+
+class these(models.Model):
+id_these = models.CharField(max_length=100)
+titre_these = models.CharField(max_length=100)
+
+
+class labo(models.Model):
+id_labo = models.CharField(max_length=100)
+libelle_labo = models.CharField(max_length=100)
+
+
+class enregistrement(models.Model):
+id_enregistrement = models.CharField(max_length=100)
+rapport = models.CharField(max_length=100)
+articles = models.CharField(max_length=100)
+date_enregristrement = models.DateTimeField()
+
+
+class equipe_rechere(models.Model):
+id_equipe = models.CharField(max_length=100)
+libelle_equipe = models.CharField(max_length=100)
+    
+    
+    <h1> views section </h1>
+from django.shortcuts import render,redirect
+#from .models import Post
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+from django.contrib.auth import login,logout
+    
+def signup_view(request):
+    form = UserCreationForm()
+    if request.method == 'POST':
+         form = UserCreationForm(request.POST)
+         if form.is_valid():
+             user = form.save()
+             #  now log the user in
+             #user = User.objects.get(username=form.cleaned_data.get('username'))
+            # login(request, user)
+            # return redirect('articles:list') :You should add a home page here to redirect the user
+    else:
+        form = UserCreationForm()
+    return render(request, 'fcim_blog/signup.html', { 'form': form })
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            #login the user
+            user = form.get_user()
+            login(request,user)
+            # return redirect('articles:list') :You should add a personal page here to redirect the user to his page
+    else:
+        form = AuthenticationForm()
+    return render(request, 'fcim_blog/login.html', { 'form': form })
+
+
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('fcim_blog:login')
+    
+    
+    
+    <h1>url section</h1>
+    from django.urls import path
+from django.conf.urls import url
+from . import views
+
+app_name='fcim_blog'
+urlpatterns = [
+#      path('', views.home, name='blog-home'),
+#      path('about/', views.about, name='blog-about'),
+    url(r'^signup/$', views.signup_view, name="signup"),
+    url(r'^login/$', views.login_view,name="login"),
+    url(r'^logout/$', views.logout_view,name="logout"),
+]
 
   </body>
 </html>

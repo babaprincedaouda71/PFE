@@ -48,6 +48,8 @@ titre_these = models.CharField(max_length=100, default="")
 class labo(models.Model):
 id_labo = models.CharField(max_length=100, default="")
 libelle_labo = models.CharField(max_length=100, default="")
+id_equipe = models.ForeignKey(
+        equipe_rechere, on_delete=models.CASCADE)
 
 
 class enregistrement(models.Model):
@@ -60,6 +62,11 @@ date_enregristrement = models.DateTimeField()
 class equipe_rechere(models.Model):
 id_equipe = models.CharField(max_length=100, default="")
 libelle_equipe = models.CharField(max_length=100, default="")
+pro_id= models.ForeignKey(
+        Professeur, on_delete=models.CASCADE)
+id_docorant = models.ForeignKey(
+        doctorant on_delete=models.CASCADE)  
+      
 """
 
 class posseder_dip

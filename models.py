@@ -78,7 +78,7 @@ class enregistrement(models.Model):
 class equipe_rechere(models.Model):
     id_equipe = models.AutoField(primary_key = True)
     libelle_equipe = models.CharField(max_length=100, default="")
-    pro_id= models.ForeignKey(
+    code_prof= models.ForeignKey(
         Professeur, on_delete=models.CASCADE)
     id_docorant = models.ForeignKey(
         doctorant on_delete=models.CASCADE)
@@ -87,6 +87,12 @@ class equipe_rechere(models.Model):
 class doctorant(model.Model):
     id_doctorant = models.AutoField(primary_key = True)
     date_dip = model.DateTimeField()
+    id_these= models.ForeignKey(
+        these, on_delete=models.CASCADE)
+     ref_compte= models.ForeignKey(
+        compte, on_delete=models.CASCADE)
+     num_insc = models.ForeignKey(
+        candidat, on_delete=models.CASCADE)
 
 
 class posseder_dip(models.Model):
@@ -96,7 +102,31 @@ class posseder_dip(models.Model):
 class professeur(model.Model):
     code_prof = models.AutoField(primary_key = True)
     status = models.BooleanField(default = False)
+    ref_compte= models.ForeignKey(
+        compte, on_delete=models.CASCADE)
+    id_docorant = models.ForeignKey(
+        doctorant on_delete=models.CASCADE)
 
 
 class admin(model.Model):
     id_admin = models.AutoField(primary_key = True)
+    ref_compte= models.ForeignKey(
+        compte, on_delete=models.CASCADE)
+    code_jury= models.ForeignKey(
+        jury, on_delete=models.CASCADE)
+    
+class compte(models.Model):
+    ref_compte = models.AutoField(primary_key = True)
+    date_cree = models.DateTimeField()
+    
+class jury(models.Model):
+    code_jury = models.AutoField(primary_key = True)
+    libelle_jury =  models.CharField(max_length=100, default="")
+    code_prof= models.ForeignKey(
+        Professeur, on_delete=models.CASCADE)
+    
+ class etablissement(models.Model):
+    code_etab = models.CharField(max_length=100, default="",primary_key = True)
+    libelle_etab = models.CharField(max_length=100, default="")
+    addr_etab = models.CharField(max_length=200, default="")
+   code_dip = model.ForeignKey(diplome, on_delete = models.CASCADE)

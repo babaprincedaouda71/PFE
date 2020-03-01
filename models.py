@@ -6,6 +6,10 @@ from datetime import datetime
 # Create your models here.
 
 
+
+
+
+
 class individu(models.Model):
     cin = models.CharField(max_length = 8, primary_key = True, default = "")
     nom = models.CharField(max_length = 100, default="")
@@ -30,29 +34,28 @@ class individu(models.Model):
     etat_civil = models.CharField(max_length = 15, choices = civil_choice)
     date_nais = models.DateField(default=datetime.now)
     est_admin = models.BooleanField(default=False)
+    #code_dip = models.ForeignKey(diplome, on_delete=models.CASCADE)
 
+
+class diplome(models.Model):
+    code_dip = models.AutoField(primary_key = True)
+    diplome_choice = (
+        ('mst001', 'mst001'),
+        ('mst002', 'mst002'),
+        ('ing001', 'ing001'),
+        )
+    type_dip = models.CharField(max_length=100, choices = diplome_choice, default="")
+    date_dip = models.DateTimeField()
 
 
 
 class candidat(models.Model):
     num_insc = models.AutoField(primary_key = True)
     date = models.DateTimeField()
-    fonction = models.CharField(max_length = 60)
+    fonction = models.CharField(max_length = 60, default="")
     entreprise = models.CharField(max_length = 60)
 
 
-
-
-class diplome(models.Model):
-    diplome_choice = (
-        ('mst001', 'mst001'),
-        ('mst002', 'mst002'),
-        ('ing001', 'ing001'),
-    )
-    code_dip = models.CharField(max_length=20, choices = diplome_choice, primary_key = True)
-    type_dip = models.CharField(max_length=100, default="")
-    date_dip = models.DateTimeField()
-    libelle_dip = models.CharField(max_length=100, default="")
 
 
 
@@ -131,7 +134,7 @@ class jury(models.Model):
 
 
 
-class admin(models.Model):
+class admini(models.Model):
     id_admin = models.AutoField(primary_key = True)
     ref_compte= models.ForeignKey(compte, on_delete=models.CASCADE)
     code_jury= models.ForeignKey(jury, on_delete=models.CASCADE)

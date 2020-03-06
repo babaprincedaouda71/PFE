@@ -12,7 +12,7 @@
     <header>
       <div id="img">
         <div class="univ">
-          <img src="{% static 'top_banner.jpg '%}" height="" width="100%" alt="">
+
         </div>
       </div>
         {% block content %}
@@ -20,9 +20,13 @@
         {% endblock content %}
         <nav>
           <ul id="nav">
-            <li id="nav_home"> <a href="{% url 'index' %}">Home</a> </li>
-            <li id="nav_register"> <a href="{% url 'form' %}">Inscription</a> </li>
-            <li id="nav_about"> <a href="{% url 'about' %}">About</a> </li>
+            <li id="nav_home"> <a href="{% url 'pages:index' %}">Home</a> </li>
+            <li id="nav_register"> <a href="{% url 'pages:inscription' %}">Inscription</a> </li>
+            <li id="nav_about"> <a href="{% url 'pages:about' %}">About</a> </li>
+            <li id="nav_test"> <a href="{% url 'pages:test' %}">Test</a> </li>
+            <li id="nav_signup"> <a href="{% url 'pages:signup' %}">SignUp</a> </li>
+            <li id="nav_login"> <a href="{% url 'pages:login' %}">Login</a> </li>
+            <li id="nav_logout"> <a href="{% url 'pages:logout' %}">Logout</a> </li>
           </ul>
         </nav>
     </header>
@@ -33,19 +37,22 @@
 
       {% block validation %}
       {% endblock validation %}
+
+      {% block login %}
+      {% endblock login %}
       <nav>
 
       </nav>
       {% block diapo %}
-      <article class="">
+      <!---<article class="">
         <h4 align = "center">Partie des diaporama</h4>
-      </article>
+      </article> -->
       {% endblock diapo %}
 
       {% block requis %}
-      <article class="">
+      <!--<article class="">
         <h4 align = "center">Partie des pre_requis</h4>
-      </article>
+      </article> -->
       {% endblock requis %}
 
     </section>

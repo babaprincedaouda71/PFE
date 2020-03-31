@@ -1,1 +1,46 @@
 
+{% extends "pages/base.html" %}
+
+{% block content %}
+
+
+<form action="" method="post">
+  {% csrf_token %}
+
+  <table>
+      <thead>
+        <tr>
+          <th colspan="4" align = "center">Désactivation de compte</th>
+        </tr>
+          <tr>
+                <th> Nom </th>
+                <th>Prénom</th>
+                <th> Status </th>
+                <th> Actions </th>
+          </tr>
+
+      </thead>
+      {% for individu  in  list_individus %}
+      <tbody>
+              <tr>
+                  <td> {{individu.nom}}</td>
+                  <td>{{individu.prenoms}}</td>
+                  <td> {{individu.my_status}}</td>
+                  <td>
+
+                    <input type="radio" name="inpt_{{individu.cin}}"  value="activer"    checked = "checked"  />Activer 
+                    <input type="radio" name="inpt_{{individu.cin}}"  value="desactiver" {% if individu.desactiver %}  checked = "checked" {% endif %} /> Désactiver
+
+                  </td>
+              </tr>
+      </tbody>
+       {% endfor %}
+
+  </table>
+
+    <input type="submit" value="Enregistrer" />
+
+</form>
+
+
+{% endblock %}

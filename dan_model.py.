@@ -1,0 +1,165 @@
+from django.db import models
+#from django.utils import timezone
+from datetime import datetime
+from django.contrib.auth.models import User
+
+
+
+# Create your models here.
+
+
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg',upload_to='profile_pics')
+
+    def __(self):
+        return f'{self.user.username} Profile'
+
+
+
+
+class Individu(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    cin = models.CharField(max_length = 8, unique=True, default = "")
+    nom = models.CharField(max_length = 100, default="")
+    prenoms = models.CharField(max_length = 42, default="")
+    photo = models.ImageField(default="")
+    email = models.EmailField(max_length = 30, default='exemple@gmail.com')
+    tel = models.CharField(max_length = 15, default="")
+    addr = models.CharField(max_length = 60, default="")
+    ville_residence = models.CharField(max_length = 250, default="")
+    username = models.CharField(max_length = 30, default="")
+    password = models.CharField(max_length = 15, default="")
+    my_status = models.CharField(max_length = 15, default="candidat")
+    #genre_choice = (
+    #    ('Masculin', 'Masculin'),
+    #    ('Feminin', 'Feminin'),
+    #)
+    genre = models.CharField(max_length = 15)
+    #civil_choice = (
+    #    ('Celibataire', 'Celibataire'),
+    #    ('Marié', 'Marié'),
+    #    ('Veuf/Veuve', 'Veuf/Veuve'),
+    #)
+    etat_civil = models.CharField(max_length = 15)
+    date_nais = models.DateField(default=datetime.now)
+    desactiver = models.BooleanField(default = False)
+    #code_dip = models.ForeignKey(diplome, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nom
+
+
+class Diplome(models.Model):
+    code_dip = models.AutoField(primary_key = True)
+    #diplome_choice = (
+    #    ('mst001', 'mst001'),
+    #    ('mst002', 'mst002'),
+    #    ('ing001', 'ing001'),
+    #    )
+    type_dip = models.CharField(max_length=100, default="")
+    date_dip = models.DateField()
+    def __str__(self):
+        return self.type_dip
+
+
+class Candidat(models.Model):
+    num_insc = models.AutoField(primary_key = True)
+    #date = models.DateField()
+    fonction = models.CharField(max_length = 60, default="")
+    entreprise = models.CharField(max_length = 60)
+    individu = models.OneToOneField(Individu, on_delete = models.CASCADE, default="")
+    diplome = models.ManyToManyField(Diplome)
+    preselection = models.BooleanField(default = False)
+    selection = models.BooleanField(default = False)
+    def __str__(self):
+        return self.individu.nom
+
+
+
+
+class These(models.Model):
+    titre_these = models.CharField(max_length=100, default="")
+    director_these = models.CharField(max_length = 100, default="Madame Anoun")
+
+
+
+class Compte(models.Model):
+    ref_compte = models.AutoField(primary_key = True)
+    date_cree = models.DateTimeField()
+
+
+
+
+class Professeur(models.Model):
+    status = models.BooleanField(default = False)
+    
+    #id_doctorant = models.ForeignKey(Doctorant, on_delete=models.CASCADE)
+    individu = models.OneToOneField(Individu, on_delete = models.CASCADE, default="")
+
+
+
+class Equipe_recherche(models.Model):
+    libelle_equipe = models.CharField(max_length=100, default="")
+    code_prof= models.ForeignKey(Professeur, on_delete=models.CASCADE)
+#    id_doctorant = models.ForeignKey(Doctorant, on_delete=models.CASCADE)
+
+
+class Doctorant(models.Model):
+    #date_dip = models.DateTimeField()
+    these= models.OneToOneField(These, on_delete=models.CASCADE, default="")
+    #ref_compte= models.ForeignKey(Compte, on_delete=models.CASCADE)
+    candidat = models.OneToOneField(Candidat, on_delete=models.CASCADE)
+    equipe = models.ForeignKey(Equipe_recherche, on_delete = models.CASCADE, default=-1)
+
+
+
+
+
+
+
+
+
+
+
+
+class Labo(models.Model):
+    labo_choice = (
+        ('001', '001'),
+        ('002', '002'),
+    )
+    id_labo = models.CharField(max_length=100, primary_key = True, choices = labo_choice)
+    libelle_labo = models.CharField(max_length=100, default="")
+    id_equipe = models.ForeignKey(Equipe_recherche, on_delete=models.CASCADE)
+
+
+
+class Enregistrement(models.Model):
+    id_enregistrement = models.AutoField(primary_key = True)
+    rapport = models.CharField(max_length=100, default="")
+    articles = models.CharField(max_length=100, default="")
+    date_enregristrement = models.DateTimeField()
+
+
+
+
+
+class Posseder_dip(models.Model):
+    code_dip = models.ForeignKey(Diplome, on_delete = models.CASCADE)
+    id_doctorant = models.ForeignKey(Doctorant, on_delete = models.CASCADE)
+
+
+
+class Jury(models.Model):
+    code_jury = models.AutoField(primary_key = True)
+    libelle_jury =  models.CharField(max_length=100, default="")
+    code_prof= models.ForeignKey(Professeur, on_delete=models.CASCADE)
+
+
+
+class Admini(models.Model):
+    id_admin = models.AutoField(primary_key = True)
+    ref_compte= models.ForeignKey(Compte, on_delete=models.CASCADE)
+    code_jury= models.ForeignKey(Jury, on_delete=models.CASCADE)

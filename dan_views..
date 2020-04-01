@@ -1,0 +1,365 @@
+#from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.shortcuts import render
+#from .forms import PostForm
+from .models import Individu
+from .forms import registerForm
+from datetime import datetime
+from .forms import UserRegisterForm
+from .forms import createAccountForm
+#from .forms import CandidatUpdateForm
+
+from django.contrib.auth.models import User
+from .models import Diplome, These, Equipe_recherche
+from .models import Candidat, Doctorant
+from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+#to afficher une list d'element
+from django.views.generic import ListView
+from .models import Candidat
+# Create your views here.
+
+def index(request):
+    #return HttpResponse("<h1>Bienvenue a tous</h1>")
+    return render(request, "general/home.html")
+
+
+def try2(request):
+    all_cand = Candidat.objects.all()
+    #return HttpResponse("<h1>Bienvenue a tous</h1>")
+    return render(request, "general/try2.html",{'Candidat':all_cand} )
+
+@login_required()
+def register(request):
+    submitted = False
+    if request.method == 'POST':
+        form = registerForm(request.POST, request.FILES)
+        if form.is_valid():
+            cin = request.POST['cin']
+            fname = request.POST['fname']
+            lname = request.POST['lname']
+            photo = request.FILES['photo']
+            email = request.POST['email']
+            tel = request.POST['tel']
+            address = request.POST['address']
+            ville_residence = request.POST['ville_residence']
+            genre = request.POST['genre']
+            etat_civil = request.POST['etat_civil']
+            date_nais = request.POST['date_nais']
+            type_dip = request.POST['type_dip']
+            date_dip= request.POST['date_dip']
+            diplome = Diplome(type_dip = type_dip, date_dip = date_dip)
+            fonction = request.POST['fonction']
+            entreprise = request.POST['entreprise']
+            candidat = Candidat(fonction = fonction, entreprise = entreprise)
+            candidat.date = datetime.now().date()
+            individu = Individu(cin = cin, nom = fname, prenoms = lname, photo = photo, email = email, tel = tel, addr = address, ville_residence = ville_residence, genre = genre, etat_civil = etat_civil, date_nais = date_nais)
+            individu.user = request.user
+            individu.save()
+            candidat.individu= individu
+            diplome.save()
+            candidat.save()
+            candidat.diplome.add(diplome)
+
+            return redirect('pages:home')
+
+    else:
+        form = registerForm()
+    return render(request, 'general/register.html', {'form': form})
+
+#pour ajouter les information de doctorant
+def infoDoc(request):
+    submitted = False
+    if request.method == 'POST':
+        form = infoDocForm(request.POST)
+        if form.is_valid():
+            director_these = request.POST['director_these']
+            titre_these = request.POST['titre_these']
+            libelle_equipe = request.POST['libelle_equipe']
+            equipe_recherche = Equipe_recherche(libelle_equipe = libelle_equipe)
+            doctorant = Doctorant(director_these = director_these)
+            these = These(titre_these = titre_these)
+
+
+
+
+
+@login_required()
+def select_cand(request):
+    #submitted == False
+    if request.method == 'POST':
+        c_form = CandidatUpdateForm(request.POST)
+        if c_form.is_valid():
+            accepted = request.POST['accepted']
+            email = request.POST['email']
+            individu = request.POST['individu']
+            person = Individu.objects.all(nom=individu)
+            person.accepted = accepted
+            candidat = Candidat(accepted = accepted)
+
+            candidat.individu  = individu
+            candidat.individu.update()
+            candidat.update()
+        #contex = {
+        #    'c_form': c_form
+        #}
+
+        #return render(request, 'pages/select_cand.html', contex)
+    else:
+        c_form = CandidatUpdateForm()
+    return render(request, 'pages/select_cand.html', {'c_form' : c_form})
+
+
+
+
+
+
+
+def createAccountView(request):
+    #form = UserCreationForm()
+    if request.method == 'POST':
+         form = createAccountForm(request.POST)
+         if form.is_valid():
+             form.save()
+             username = form.cleaned_data.get('username')
+             messages.success(request, f'Le compte est cree! Vous pouvez vous conecter')
+             #user = form.save()
+             return redirect('pages:login')
+             #  now log the user in
+             #user = User.objects.get(username=form.cleaned_data.get('username'))
+            # login(request, user)
+            # return redirect('articles:list') :You should add a home page here to redirect the user
+    else:
+        form = createAccountForm()
+    return render(request, 'general/createAccount.html', { 'form': form })
+
+
+"""def addInfoDoc(request):
+    submitted = False
+    if request.method == 'POST':
+        form = addInfoDoc(request.POST, request.FILES)
+        if form.is_valid():
+            director_these = request.POST['director_these']
+            titre_these = request.POST['titre_these']
+            id_equipe_recherche = request.POST['id_equipe_recherche']
+            insertion1 = Doctorant(director_these =director_these, id_equipe_recherche=id_equipe_recherche)
+            insertion2 = These(titre_these = titre_these)
+            insertion1.save(commit=false)
+            insertion2.save(commit=false)
+            return redirect('general:home')
+
+    else:
+        form = addInfoDoc()
+    return render(request, 'pages/addInfoDoc.html', {'form': form})
+
+
+"""
+
+
+
+def valid(request):
+    return render(request, "pages/validation.html")
+
+
+def about(request):
+    return render(request, "pages/about.html")
+
+
+
+
+def home(request):
+    noms = Individu.objects.all()
+    return render(request, 'general/home.html', {'noms': noms})
+
+def admintemp(request):
+        #return HttpResponse("<h1>Bienvenue a tous</h1>")
+        #return redirect('paneladmin:wel')
+        return render(request, "pages/admintemp.html")
+
+def proftemp(request):
+        #return HttpResponse("<h1>Bienvenue a tous</h1>")
+        #return redirect('paneladmin:wel')
+        return render(request, "pages/proftemp.html")
+
+def h3(request):
+        #return HttpResponse("<h1>Bienvenue a tous</h1>")
+        return render(request, "pages/proftemp.html")
+
+def base(request):
+        #return HttpResponse("<h1>Bienvenue a tous</h1>")
+    return render(request, 'pages/base.html')
+def home0(request):
+        #return HttpResponse("<h1>Bienvenue a tous</h1>")
+    return render(request, 'home0.html')
+
+
+def signup_view(request):
+    form = UserRegisterForm()
+    if request.method == 'POST':
+         form = UserRegisterForm(request.POST)
+         if form.is_valid():
+             user = form.save()
+             #  now log the user in
+             #user = User.objects.get(username=form.cleaned_data.get('username'))
+            # login(request, user)
+            # return redirect('articles:list') :You should add a home page here to redirect the user
+    else:
+        form = UserRegisterForm()
+    return render(request, 'general/signup.html', { 'form': form })
+
+
+"""def LoginView(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            #login the user
+            user = form.get_user()
+            login(request,user)
+            if(user.individu.desactiver == True):
+                return redirect("pages:error_login")
+            else:
+                return redirect("pages:home")
+
+    else:
+        form = AuthenticationForm()
+    return render(request, 'general/login.html', { 'form': form })
+"""
+
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('fcim_blog:login')
+
+#pour la desactivation d'une compte
+def desactivateAccountView(request):
+    if request.method == 'POST':
+        list_ind= Individu.objects.all()
+        for individu in list_ind:
+            key = 'inpt_'+individu.cin
+            var_inpt =  request.POST[key]
+            if  var_inpt =='activer':
+                individu.desactiver = False
+            else :
+                individu.desactiver = True
+
+            individu.save()
+        return redirect('pages:desactivateAccount')
+
+    else:
+        list_individus= Individu.objects.all(); #remember to check how to paginate
+
+        return render(request, 'pages/desactivateAccount.html', { 'list_individus': list_individus })
+
+#pour selectioner les candidates
+def selectcandidatView(request):
+    if request.method == 'POST':
+        list_ind= Candidat.objects.all()
+        for candidat in list_ind:
+            key = 'inpt_'+candidat.individu.cin
+            var_inpt =  request.POST[key]
+            if  var_inpt =='accepted':
+                candidat.preselection = True
+            else :
+                candidat.preselection = False
+
+            candidat.save()
+        return redirect('pages:selectcand')
+
+    else:
+        list_individus= Candidat.objects.all(); #remember to check how to paginate
+
+        return render(request, 'pages/selectcand.html', { 'list_individus': list_individus })
+
+# pour la selection final des candidates
+def selectFinalView(request):
+    if request.method == 'POST':
+        list_ind= Candidat.objects.filter(preselection = True)
+        for candidat in list_ind:
+            key = 'inpt_'+candidat.individu.cin
+            var_inpt =  request.POST[key]
+            if  var_inpt =='accepted':
+                candidat.selection = True
+                candidat.save()
+                var_indiv = candidat.individu
+                var_indiv.my_status = 'doctorant'
+                var_indiv.save()
+            else :
+                candidat.selection = False
+                candidat.save()
+
+
+        return redirect('pages:addInfoDoc')
+
+    else:
+        list_individus= Candidat.objects.filter(preselection = True); #remember to check how to paginate
+        list_theses  = These.objects.all()
+        list_equipes  = Equipe_recherche.objects.all()
+        return render(request, 'pages/selectFinal.html', { 'list_individus': list_individus })
+
+def addInfoDocView(request):
+    if request.method == 'POST':
+        list_ind= Candidat.objects.filter(selection = True)
+        for candidat in list_ind:
+            key2 = 'inpt_th_'+candidat.individu.cin
+            var_inpt2 =  request.POST[key2]
+            these = These.objects.get(id=var_inpt2 )
+            key3 = 'inpt_eq_'+candidat.individu.cin
+            var_inpt3 =  request.POST[key3]
+            equipe = Equipe_recherche.objects.get(id=var_inpt3 )
+            if(candidat.doctorant is None):
+                doctorant= Doctorant(candidat=candidat,these =these, equipe= equipe )
+                doctorant.save()
+            else:
+                doctorant= Doctorant.objects.get(id= candidat.doctorant.id)
+                doctorant.these= these
+                doctorant.equipe = equipe
+                doctorant.save()
+
+        return redirect('pages:addInfoDoc')
+
+    else:
+        list_individus= Candidat.objects.filter(selection = True); #remember to check how to paginate
+        list_theses  = These.objects.all()
+        list_equipes  = Equipe_recherche.objects.all()
+        return render(request, 'pages/addInfoDoc.html', { 'list_individus': list_individus , 'list_theses': list_theses, 'list_equipes': list_equipes })
+
+
+# pour la preSelection des candidates
+def preSelectionView(request):
+    list_candidats = Candidat.objects.filter(preselection = True)
+    return render(request, 'general/preSelection.html', { 'list_candidats': list_candidats })
+
+#pour selectioner les candidates
+def selectionView(request):
+    list_candidats = Candidat.objects.filter(selection = True)
+    return render(request, 'general/selection.html', { 'list_candidats': list_candidats })
+
+#to afficher les candidates
+class CandidatList(ListView):
+    model = Candidat
+
+
+class TryList(ListView):
+    model = Candidat
+
+"""def new_ind(request):
+    if request.method=="POST":
+        post_form = PostForm(request.POST)
+        ind_form = individuForm(request.POST)
+        if post_form.is_valid() and ind_form.is_valid():
+            dipl = post_form.save()
+            ind = ind_form.save(False)
+            ind.dipl = dipl
+            ind.save()
+    else:
+        post_form = PostForm()
+        ind_form = individuForm()
+    args = {}
+    args.update(csrf(request))
+    args['post_form'] = post_form
+    args['ind_form'] = ind_form
+    return render(request, "forms.html",args)
+"""

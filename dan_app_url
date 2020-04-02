@@ -21,8 +21,8 @@ urlpatterns = [
     #url(r'^signup/$', views.signup_view, name="signup"),
     #url(r'^login/$', views.login_view,name="login"),
     #url(r'^logout/$', views.logout_view,name="logout"),
-    url('addInfoDoc', views.addInfoDoc,name="addInfoDoc"),
-    url('profemp', views.proftemp,name="addInfoDoc"),
+    url('addInfoDoc', views.addInfoDocView,name="addInfoDoc"),
+    url('profemp', views.proftemp,name="profemp"),
     url(r'^h3/$', views.h3,name="h3"),
 ### Login and logout URL
     url(r'login/$', auth_views.LoginView.as_view(template_name='general/login.html'),name="login"),
@@ -47,6 +47,8 @@ urlpatterns = [
 ## Pour afficher la liste de selection finale
     url(r'selection/$', views.selectionView,name="selection"),
 
+## Pour afficher l'information de utilisateur
+    url(r'mesInfo/$', views.mesInfoView,name="mesInfo"),
     #url(r'^$', views.new_ind, name = 'new_ind'),
 ]
 

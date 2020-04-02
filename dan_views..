@@ -42,7 +42,6 @@ def register(request):
             fname = request.POST['fname']
             lname = request.POST['lname']
             photo = request.FILES['photo']
-            email = request.POST['email']
             tel = request.POST['tel']
             address = request.POST['address']
             ville_residence = request.POST['ville_residence']
@@ -56,9 +55,13 @@ def register(request):
             entreprise = request.POST['entreprise']
             candidat = Candidat(fonction = fonction, entreprise = entreprise)
             candidat.date = datetime.now().date()
-            individu = Individu(cin = cin, nom = fname, prenoms = lname, photo = photo, email = email, tel = tel, addr = address, ville_residence = ville_residence, genre = genre, etat_civil = etat_civil, date_nais = date_nais)
+            individu = Individu(cin = cin, nom = fname, prenoms = lname, photo = photo, tel = tel, addr = address, ville_residence = ville_residence, genre = genre, etat_civil = etat_civil, date_nais = date_nais)
             individu.user = request.user
             individu.save()
+            user = individu.user
+            user.last_name = lname
+            user.first_name = fname
+            user.save()
             candidat.individu= individu
             diplome.save()
             candidat.save()
@@ -234,6 +237,7 @@ def logout_view(request):
         return redirect('fcim_blog:login')
 
 #pour la desactivation d'une compte
+@login_required()
 def desactivateAccountView(request):
     if request.method == 'POST':
         list_ind= Individu.objects.all()
@@ -254,6 +258,7 @@ def desactivateAccountView(request):
         return render(request, 'pages/desactivateAccount.html', { 'list_individus': list_individus })
 
 #pour selectioner les candidates
+@login_required()
 def selectcandidatView(request):
     if request.method == 'POST':
         list_ind= Candidat.objects.all()
@@ -274,6 +279,7 @@ def selectcandidatView(request):
         return render(request, 'pages/selectcand.html', { 'list_individus': list_individus })
 
 # pour la selection final des candidates
+@login_required()
 def selectFinalView(request):
     if request.method == 'POST':
         list_ind= Candidat.objects.filter(preselection = True)
@@ -299,6 +305,8 @@ def selectFinalView(request):
         list_equipes  = Equipe_recherche.objects.all()
         return render(request, 'pages/selectFinal.html', { 'list_individus': list_individus })
 
+
+@login_required()
 def addInfoDocView(request):
     if request.method == 'POST':
         list_ind= Candidat.objects.filter(selection = True)
@@ -309,7 +317,7 @@ def addInfoDocView(request):
             key3 = 'inpt_eq_'+candidat.individu.cin
             var_inpt3 =  request.POST[key3]
             equipe = Equipe_recherche.objects.get(id=var_inpt3 )
-            if(candidat.doctorant is None):
+            if(not hasattr(candidat, 'doctorant')):
                 doctorant= Doctorant(candidat=candidat,these =these, equipe= equipe )
                 doctorant.save()
             else:
@@ -328,14 +336,22 @@ def addInfoDocView(request):
 
 
 # pour la preSelection des candidates
+@login_required()
 def preSelectionView(request):
     list_candidats = Candidat.objects.filter(preselection = True)
     return render(request, 'general/preSelection.html', { 'list_candidats': list_candidats })
 
 #pour selectioner les candidates
+@login_required()
 def selectionView(request):
     list_candidats = Candidat.objects.filter(selection = True)
     return render(request, 'general/selection.html', { 'list_candidats': list_candidats })
+
+@login_required()
+def mesInfoView(request):
+    list_doctorants = Doctorant.objects.filter(equipe = request.user.individu.professeur.equipe_recherche)
+    return render(request, 'pages/mesInfo.html', { 'list_doctorants': list_doctorants })
+
 
 #to afficher les candidates
 class CandidatList(ListView):

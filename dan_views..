@@ -349,8 +349,11 @@ def selectionView(request):
 
 @login_required()
 def mesInfoView(request):
-    list_doctorants = Doctorant.objects.filter(equipe = request.user.individu.professeur.equipe_recherche)
-    return render(request, 'pages/mesInfo.html', { 'list_doctorants': list_doctorants })
+    if request.user.individu.my_status == "professeur":
+        list_doctorants = Doctorant.objects.filter(equipe = request.user.individu.professeur.equipe_recherche)
+        return render(request, 'pages/mesInfo.html', { 'list_doctorants': list_doctorants })
+    else:
+        return render(request, 'pages/mesInfo.html')
 
 
 #to afficher les candidates

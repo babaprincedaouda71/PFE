@@ -1,0 +1,148 @@
+from django.db import models
+#from django.utils import timezone
+from datetime import datetime
+from django.contrib.auth.models import User
+
+
+
+# Create your models here.
+
+
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg',upload_to='profile_pics')
+
+    def __(self):
+        return f'{self.user.username} Profile'
+
+
+
+
+class Individu(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    cin = models.CharField(max_length = 8, unique=True, default = "")
+    nom = models.CharField(max_length = 100, default="")
+    prenoms = models.CharField(max_length = 42, default="")
+    photo = models.ImageField(default="")
+    tel = models.CharField(max_length = 15, default="")
+    addr = models.CharField(max_length = 60, default="")
+    ville_residence = models.CharField(max_length = 250, default="")
+    my_status = models.CharField(max_length = 15, default="candidat")
+    #genre_choice = (
+    #    ('Masculin', 'Masculin'),
+    #    ('Feminin', 'Feminin'),
+    #)
+    genre = models.CharField(max_length = 15)
+    #civil_choice = (
+    #    ('Celibataire', 'Celibataire'),
+    #    ('Marié', 'Marié'),
+    #    ('Veuf/Veuve', 'Veuf/Veuve'),
+    #)
+    etat_civil = models.CharField(max_length = 15)
+    date_nais = models.DateField(default=datetime.now)
+    desactiver = models.BooleanField(default = False)
+    def __str__(self):
+        return str(self.nom)
+
+
+class Diplome(models.Model):
+    #diplome_choice = (
+    #    ('mst001', 'mst001'),
+    #    ('mst002', 'mst002'),
+    #    ('ing001', 'ing001'),
+    #    )
+    type_dip = models.CharField(max_length=100, default="")
+    date_dip = models.DateField()
+    def __str__(self):
+        return self.type_dip
+
+
+class Candidat(models.Model):
+    fonction = models.CharField(max_length = 60, default="")
+    entreprise = models.CharField(max_length = 60)
+    individu = models.OneToOneField(Individu, on_delete = models.CASCADE, default="")
+    diplome = models.ManyToManyField(Diplome)
+    preselection = models.BooleanField(default = False)
+    selection = models.BooleanField(default = False)
+    def __str__(self):
+        return "%s %s" %(self.individu.nom, self.individu.prenoms)
+
+
+
+
+class These(models.Model):
+    titre_these = models.CharField(max_length=100, default="")
+    director_these = models.CharField(max_length = 100, default="Madame Anoun")
+    def __str__(self):
+        return self.titre_these
+
+
+
+class Compte(models.Model):
+    ref_compte = models.AutoField(primary_key = True)
+    date_cree = models.DateTimeField()
+
+
+
+
+class Professeur(models.Model):
+    status = models.BooleanField(default = False)
+    individu = models.OneToOneField(Individu, on_delete = models.CASCADE, default="")
+    def __str__(self):
+        return "%s %s" %(self.individu.nom, self.individu.prenoms)
+
+
+
+class Equipe_recherche(models.Model):
+    libelle_equipe = models.CharField(max_length=100, default="")
+    prof= models.OneToOneField(Professeur, on_delete=models.CASCADE,default="")
+    def __str__(self):
+        return self.libelle_equipe
+
+class Doctorant(models.Model):
+    these= models.OneToOneField(These, on_delete=models.CASCADE, default="")
+    candidat = models.OneToOneField(Candidat, on_delete=models.CASCADE)
+    equipe = models.ForeignKey(Equipe_recherche, on_delete = models.CASCADE, default=-1)
+    def __str__(self):
+        return "%s %s" %(self.candidat.individu.nom, self.candidat.individu.prenoms)
+
+class Msg(models.Model):
+    to_who = models.CharField(max_length=100, default="")
+    sujet_msg = models.CharField(max_length=100, default="")
+    msg = models.TextField(default="")
+    #attachment = models.CharField(max_length=100, default="")
+    sender = models.ForeignKey(Individu, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=datetime.now)
+    def __str__(self):
+        return self.sujet_msg
+
+
+
+class Key(models.Model):
+    value = models.CharField(max_length = 10, default = "")
+
+
+class Labo(models.Model):
+    libelle_labo = models.CharField(max_length=100, default="")
+    id_equipe = models.ForeignKey(Equipe_recherche, on_delete=models.CASCADE)
+
+
+
+class Enregistrement(models.Model):
+    rapport = models.CharField(max_length=100, default="")
+    articles = models.CharField(max_length=100, default="")
+    date_enregristrement = models.DateTimeField()
+
+
+
+class Jury(models.Model):
+    libelle_jury =  models.CharField(max_length=100, default="")
+    code_prof= models.ForeignKey(Professeur, on_delete=models.CASCADE)
+
+
+
+class Admini(models.Model):
+    ref_compte= models.ForeignKey(Compte, on_delete=models.CASCADE)
+    code_jury= models.ForeignKey(Jury, on_delete=models.CASCADE)

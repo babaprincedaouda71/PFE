@@ -1,0 +1,23 @@
+{% extends "general/layout.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="wrapper row3">
+  <main class="hoc container clear">
+    <!-- main body -->
+    <!-- ################################################################################################ -->
+    <div class="sectiontitle">
+      <h6 class="heading">S'inscrire</h6>
+    </div>
+    <div class="group">
+      <div align = "center">
+        {% for article in articles %}
+        <p> {{ article.auteur.candidat.individu.nom }} {{ article.auteur.candidat.individu.prenoms }} </p>
+        <p> {{ article.titre }} </p>
+        <p> {{ article.date }} </p>
+        <p> {{ article.body }} </p>
+        {% endfor %}
+      </div>
+    </div>
+{% endblock %}

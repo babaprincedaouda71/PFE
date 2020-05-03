@@ -1,0 +1,186 @@
+{%  load static %}
+<!DOCTYPE html>
+<html lang="">
+<!-- To declare your language - read more here: https://www.w3.org/International/questions/qa-html-language-declarations -->
+<head>
+<title>DanColy</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="{% static 'plateforme/styles/layout.css'%}" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.0/cjs/popper-base.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js">
+
+</script>
+
+</head>
+<style media="screen">
+.total{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+background-size: cover;
+background-image:url('static/pages/img/e3');
+animation-name:  dogo;
+animation-duration: 50s;
+animation-delay: 5s;
+animation-iteration-count: 2;
+animation-timing-function: ease-in-out;
+z-index: -1
+
+
+
+}
+
+
+
+@keyframes dogo {
+	5%,90%{
+	background-image:url('static/pages/img/d2.jpg');
+		}
+
+		60%{
+						background-image:url('static/pages/img/d1.jpg');
+		}
+
+		80%{
+					background-image:url('static/pages/img/d1.jpg');
+		}
+
+    95%{
+      background-image: url({% static 'pages/images/demo/backgrounds/acti.jpg' %});
+    }
+
+
+}
+</style>
+<body id="top">
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- Top Background Image Wrapper -->
+<div class="bgded overlay">
+  <div class="total">
+
+  </div>
+  <!-- ################################################################################################ -->
+  <div class="wrapper row0">
+
+    <div id="topbar" class="hoc clear">
+      <!-- ################################################################################################ -->
+        <div class="fl_left">
+          <ul class="nospace">
+            <li><a href="{% url 'pages:index' %}"><i class="fa fa-lg fa-home"></i></a></li>
+            <li><a href="{% url 'pages:form' %}"style="color:#CAD1E1 ;">About</a></li>
+              <li><a href="{% url 'pages:index' %}"style="color:#EFF1F5 ;"><i class="fa fa-envelope-o"></i> estc@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fl_right">
+        <ul class="nospace">
+          <li><i class="fa fa-facebook-square" style="font-size:20px"></i> </li>
+          <li><i class="fa fa-twitter" style="font-size:20px"></i> </li>
+          <li><i class="	fa fa-address-book " style="font-size:20px"></i> </li>
+        </ul>
+      </div
+      <!-- ################################################################################################ -->
+    </div>
+  </div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <div class="wrapper row1">
+
+    <header id="header" class="hoc clear">
+      <!-- ################################################################################################ -->
+      <div id="logo" class="fl_left">
+        <h1><a href="{% url 'pages:index' %}">DanColy</a></h1>
+
+      </div>
+
+      <!-- ################################################################################################ -->
+      <nav id="mainav" class="fl_right">
+        <ul class="clear">
+          <li class="active"><a href="{% url 'pages:form' %}">Actualities</a></li>
+          <li><a class="drop" href="#">formation</a>
+            <ul>
+              <li><a href=""> Informatique</a></li>
+              <li><a href="">Electrique</a></li>
+              <li><a href="">Mechanique</a></li>
+
+            </ul>
+          </li>
+
+           <li><a class="drop" href="#">researche</a>
+            <ul>
+              <li><a href="#">Projets</a></li>
+              <li><a class="drop" href="#">Level 2 + Drop</a>
+                <ul>
+                  <li><a href="#">Level 3</a></li>
+                  <li><a href="#">Level 3</a></li>
+                  <li><a href="#">Level 3</a></li>
+                </ul>
+              </li>
+        </ul>
+        <li><a class="drop" href="#">Evenements</a>
+          <ul>
+            <li><a href=""> GAllery</a></li>
+            <li><a href="">Selection</a></li>
+            <li><a href="">Sidebar Left</a></li>
+            <li><a href="">Sidebar Right</a></li>
+            <li><a href="">Basic Grid</a></li>
+          </ul>
+        </li>
+        <li><a class="drop" href="#">notisfications</a>
+          <ul>
+            <li><a href="{% url 'pages:preSelection' %}"> preSelection</a></li>
+            <li><a href="{% url 'pages:selection' %}">Selection</a></li>
+            <li><a href="pages/sidebar-left.html">Sidebar Left</a></li>
+            <li><a href="pages/sidebar-right.html">Sidebar Right</a></li>
+            <li><a href="pages/basic-grid.html">Basic Grid</a></li>
+          </ul>
+        </li>
+
+      </nav>
+      <!-- ################################################################################################ -->
+    </header>
+  </div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  {% block content_caroussel %}
+
+  {% endblock content_caroussel %}
+
+  <!-- ################################################################################################ -->
+</div>
+<!-- End Top Background Image Wrapper -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+
+{% block content %}
+
+{% endblock content %}
+
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<!-- ################################################################################################ -->
+<a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
+<!-- JAVASCRIPTS -->
+<script src="{% static 'plateforme/scripts/jquery.min.js'%}"></script>
+<script src="{% static 'plateforme/scripts/jquery.backtotop.js'%}"></script>
+<script src="{% static 'plateforme/scripts/jquery.mobilemenu.js'%}"></script>
+</body>
+</html>

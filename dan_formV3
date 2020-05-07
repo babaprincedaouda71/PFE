@@ -1,0 +1,109 @@
+from django import forms
+from .models import Individu
+from .models import Candidat
+from .models import Diplome
+from .models import Profile
+from datetime import datetime
+from django.contrib.auth.forms import User
+from django.contrib.auth.forms import UserCreationForm
+
+## Class django pour afficher le calendrier au niveau du formulaire
+class dateInput(forms.DateInput):
+    ####Le formulaire pour l'inscription du candidat####
+    input_type = 'date'
+class registerForm(forms.Form):
+    cin = forms.CharField(max_length = 8, label = "CIN")
+    fname = forms.CharField(max_length = 50, label = "Nom")
+    lname = forms.CharField(max_length = 50, label = "Prénom")
+    photo = forms.ImageField(label = "Photo")
+    tel = forms.CharField(max_length = 15, label = "Téléphone")
+    address = forms.CharField(max_length = 60, label = "Adresse")
+    ville_residence = forms.CharField(max_length = 250, label = "Ville de résidence")
+    genre = forms.ChoiceField(choices = [('M', 'Masculin'), ('F', 'Feminin')], label = "Genre")
+    etat_civil = forms.ChoiceField(choices = [('Célibataire', 'Célibataire'), ('Marié/Mariée', 'Marié/Mariée')], label = "Etat civil")
+    date_nais = forms.DateField(label = "Date de naissance", widget = dateInput)
+    type_dip = forms.ChoiceField(choices = [('Master', 'Master'),("Diplome d'ingenieur", "Diplome d'ingenieur")], label = "Choisissez votre diplome")
+    date_dip = forms.DateField(label = "Date du diplome", widget = dateInput)
+    fonction = forms.CharField(max_length = 60, label = "Votre fonction")
+    entreprise = forms.CharField(max_length= 60, label = "Le nom de l'entreprise")
+
+"""class msgForm(forms.Form):
+    from_who = forms.CharField(max_length=100)
+    to_who = forms.CharField(max_length=100)
+    sujet_msg = forms.CharField(max_length=100)
+    msg =forms.CharField(max_length=9999)
+    attachment = forms.CharField(max_length=100)
+    doctorant =  forms.CharField(max_length=100)
+    prof =  forms.CharField(max_length=100)
+
+"""
+
+
+
+
+"""class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = Individu
+        fields = ['username', 'email', 'password1', 'password2']"""
+
+# Personnalisation de du formulaire de creation de compte
+class createAccountForm(UserCreationForm):
+    email = forms.EmailField()
+    #last_name = forms.CharField()
+    #first_name = forms.CharField()
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+
+class addInfoDoc(forms.Form):
+    director_these =  forms.CharField(max_length = 8, label = "director_these")
+    titre_these = forms.CharField(max_length = 8, label = "titre_these")
+    equipe_recherche = forms.CharField(max_length = 8, label = "equipe_recherche")
+
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image']
+
+
+
+
+#class registerForm(forms.Form):
+#    fname = forms.CharField()
+#    lname = forms.CharField()
+#    email = forms.EmailField()
+#    category = forms.ChoiceField(choices = [('question', 'Question'), ('other', 'Other')])
+#    subject = forms.CharField()
+#    body = forms.CharField(widget=forms.Textarea)
+
+#class PostForm(forms.ModelForm):
+
+#    class Meta:
+        #model = diplome
+        #model = candidat,
+#        model = Individu
+        #fields = ('code_dip', 'type_dip',)
+    #    fields = ('date', 'fonction', 'entreprise')
+#        fields = ('cin', 'nom', 'prenoms', 'photo', 'email', 'tel', 'ville_residence', 'genre', 'etat_civil', 'date_nais')
+
+
+
+"""class individuForm(forms.ModelForm):
+
+    class Meta:
+        model = individu
+        fields = ('cin', 'nom', 'prenoms', 'photo', 'mail', 'tel', 'ville_residence', 'genre', 'etat_civil', 'date_nais')
+"""
